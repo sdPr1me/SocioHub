@@ -1,0 +1,8 @@
+.app-bar {
+  background: linear-gradient(
+    90deg,
+    rgba(55, 7, 117, 1) 0%,
+    rgba(118, 34, 158, 1) 80%
+  );
+  color: white;
+}
