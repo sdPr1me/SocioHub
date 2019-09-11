@@ -1,0 +1,6 @@
+.tabItem {
+  color: black;
+}
+.tabItem.selected {
+  color: violet;
+}
