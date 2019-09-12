@@ -15,6 +15,25 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import { withStyles, fade } from "@material-ui/core/styles";
+const useStyles = theme => ({
+  radioRoot: {
+    "&:hover": {
+      backgroundColor: fade("#76229E", 0.08)
+    },
+    "&$checked": {
+      color: "#501285",
+      "&:hover": {
+        backgroundColor: fade("#501285", 0.08),
+        // Reset on touch devices, it doesn't add specificity
+        "@media (hover: none)": {
+          backgroundColor: "transparent"
+        }
+      }
+    }
+  },
+  checked: {}
+});
 class Home extends Component {
   state = {
     isSignUp: false,
@@ -29,6 +48,7 @@ class Home extends Component {
     }
   };
   render() {
+    const { classes } = this.props;
     return (
       <Grid container>
         <Grid item md={6} className="main-div">
@@ -165,19 +185,40 @@ class Home extends Component {
                       >
                         <FormControlLabel
                           value="Male"
-                          control={<Radio />}
+                          control={
+                            <Radio
+                              classes={{
+                                root: classes.radioRoot,
+                                checked: classes.checked
+                              }}
+                            />
+                          }
                           label="Male"
                           labelPlacement="end"
                         />
                         <FormControlLabel
                           value="Female"
-                          control={<Radio />}
+                          control={
+                            <Radio
+                              classes={{
+                                root: classes.radioRoot,
+                                checked: classes.checked
+                              }}
+                            />
+                          }
                           label="Female"
                           labelPlacement="end"
                         />
                         <FormControlLabel
                           value="Others"
-                          control={<Radio />}
+                          control={
+                            <Radio
+                              classes={{
+                                root: classes.radioRoot,
+                                checked: classes.checked
+                              }}
+                            />
+                          }
                           label="Others"
                           labelPlacement="end"
                         />
@@ -212,4 +253,4 @@ class Home extends Component {
     );
   }
 }
-export default Home;
+export default withStyles(useStyles)(Home);
