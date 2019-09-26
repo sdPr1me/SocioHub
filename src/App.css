@@ -1,9 +1,16 @@
 .App {
   text-align: center;
+  flex-grow: 1;
+}
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
   background: linear-gradient(
     270deg,
     rgba(55, 7, 117, 1) 0%,
     rgba(118, 34, 158, 1) 80%
   );
-  flex-grow: 1;
 }
