@@ -19,6 +19,7 @@ import { withStyles, fade } from "@material-ui/core/styles";
 import dateFormat from "dateformat";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { connect } from "react-redux";
 const useStyles = theme => ({
   radioRoot: {
     "&:hover": {
@@ -55,19 +56,6 @@ class Home extends Component {
   };
   handleSignIn = () => {
     console.log(this.state.emailId + "  " + this.state.password);
-  };
-  handleSignUp = () => {
-    console.log(
-      this.state.name +
-        " " +
-        this.state.emailId +
-        "  " +
-        this.state.password +
-        " " +
-        this.state.selectedDOB +
-        " " +
-        this.state.selectedGender
-    );
   };
   render() {
     const { classes } = this.props;
@@ -275,7 +263,11 @@ class Home extends Component {
                       <SimpleButton
                         title="Sign Up for Sociohub"
                         size="large"
-                        onClick={this.handleSignUp}
+                        onClick={() => {
+                          console.log("signup");
+                          console.log(this.props.handleSignUp);
+                          this.props.handleSignUp();
+                        }}
                       ></SimpleButton>
                     </CardContent>
                   </Card>
@@ -303,4 +295,13 @@ class Home extends Component {
     );
   }
 }
-export default withStyles(useStyles)(Home);
+const mapDispatchToProps = dispatch => {
+  console.log(dispatch);
+  return {
+    handleSignUp: () => dispatch({ type: "SIGN_UP" })
+  };
+};
+export default connect(
+  null,
+  mapDispatchToProps
+)(withStyles(useStyles)(Home));

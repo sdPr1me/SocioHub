@@ -18,32 +18,65 @@ exports.getAuthentication = functions
   .region("asia-northeast1")
   .https.onRequest((req, res) => {
     let requestedId = req.body.deviceId;
-    let isAuthenticated = false;
-    firestore
-      .collection("accounts")
-      .listDocuments()
-      .then(docrefs => {
-        let snapPromises = [];
-        for (let docref of docrefs) {
-          let snap = docref.get();
-          snapPromises.push(snap);
+    let resObj = { isAuthenticated: false, userId: "" };
+    // firestore
+    //   .collection("accounts")
+    //   .listDocuments()
+    //   .then(docrefs => {
+    //     let snapPromises = [];
+    //     for (let docref of docrefs) {
+    //       let snap = docref.get();
+    //       snapPromises.push(snap);
+    //     }
+    //     return Promise.all(snapPromises);
+    //   })
+    //   .then(docsnaps => {
+    //     for (let docsnap of docsnaps) {
+    //       if (requestedId === docsnap.get("DEVICE_ID")) {
+    //         resObj.isAuthenticated = true;
+    //         resObj.userId = docsnap.id;
+    //         break;
+    //       }
+    //     }
+    //     res.set("Access-Control-Allow-Origin", "*");
+    //     res.set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    //     res.set("Access-Control-Allow-Headers", "Content-Type");
+    //     res.status(200).send(resObj);
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //     res.set("Access-Control-Allow-Origin", "*");
+    //     res.set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    //     res.set("Access-Control-Allow-Headers", "Content-Type");
+    //     res.status(500).send(error);
+    //   });
+
+    let colRef = firestore.collection("accounts");
+    let queryRef = colRef.where("DEVICE_ID", "==", requestedId);
+    queryRef
+      .get()
+      .then(querySnap => {
+        if (querySnap.empty == false && querySnap.docs.length == 1) {
+          res.set("Access-Control-Allow-Origin", "*");
+          res.set(
+            "Access-Control-Allow-Methods",
+            "GET,POST,PUT,DELETE,OPTIONS"
+          );
+          res.set("Access-Control-Allow-Headers", "Content-Type");
+          resObj.isAuthenticated = true;
+          resObj.userId = requestedId;
+          res.status(200).send(resObj);
+        } else {
+          res.set("Access-Control-Allow-Origin", "*");
+          res.set(
+            "Access-Control-Allow-Methods",
+            "GET,POST,PUT,DELETE,OPTIONS"
+          );
+          res.set("Access-Control-Allow-Headers", "Content-Type");
+          res.status(401).send(resObj);
         }
-        return Promise.all(snapPromises);
-      })
-      .then(docsnaps => {
-        for (let docsnap of docsnaps) {
-          if (requestedId === docsnap.get("DEVICE_ID")) {
-            isAuthenticated = true;
-            break;
-          }
-        }
-        res.set("Access-Control-Allow-Origin", "*");
-        res.set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-        res.set("Access-Control-Allow-Headers", "Content-Type");
-        res.send(isAuthenticated);
       })
       .catch(error => {
-        console.log(error);
         res.set("Access-Control-Allow-Origin", "*");
         res.set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
         res.set("Access-Control-Allow-Headers", "Content-Type");

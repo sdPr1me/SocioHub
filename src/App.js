@@ -3,47 +3,63 @@ import Home from "./screens/home/Home";
 import Dashboard from "./screens/dashboard/Dashboard";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import "./App.css";
-import axios from "axios";
 import { withStyles, fade } from "@material-ui/core/styles";
 import withWidth from "@material-ui/core/withWidth";
+import { connect } from "react-redux";
+import store from "./store/store";
+import { userAuthenticationStarted } from "./actions/authenticationActions";
+import { Redirect } from "react-router-dom";
 const useStyles = theme => ({
   svg: {
     color: "#ffffff"
   }
 });
 class App extends Component {
-  state = {
-    isLoading: true,
-    isAuthenticated: false
-  };
   componentDidMount() {
-    let deviceId = localStorage.getItem("DEVICE_ID");
-    axios
-      .post(
-        "https://asia-northeast1-sociohub-project.cloudfunctions.net/getAuthentication",
-        { deviceId: deviceId }
-      )
-      .then(response => {
-        let authenticatedState = response.data;
-        if (authenticatedState === true) {
-          this.setState({ isLoading: false, isAuthenticated: true });
-        } else {
-          this.setState({ isLoading: false, isAuthenticated: false });
-        }
-      });
+    this.props.getAuthentication();
   }
   render() {
     const { classes } = this.props;
-    return this.state.isLoading === true ? (
-      <div className="loader">
-        <CircularProgress classes={{ svg: classes.svg }} size={100} />
-      </div>
-    ) : this.state.isAuthenticated === false ? (
-      <Home></Home>
-    ) : (
-      <Dashboard></Dashboard>
+    return (
+      <React.Fragment>
+        {this.props.isLoading === true ? (
+          <div className="loader">
+            <CircularProgress classes={{ svg: classes.svg }} size={100} />
+          </div>
+        ) : (
+          ""
+        )}
+        {this.props.isLoading === false ? (
+          this.props.isAuthenticated === false ? (
+            <Redirect to="/" />
+          ) : (
+            <Redirect to="/dashboard/1" />
+          )
+        ) : (
+          ""
+        )}
+      </React.Fragment>
     );
   }
 }
 
-export default withWidth()(withStyles(useStyles)(App));
+const mapStatetoProps = state => {
+  return {
+    isAuthenticated: state.appState.isAuthenticated,
+    isLoading: state.appState.isLoading
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    getAuthentication: () => {
+      console.log("Dispatching");
+      dispatch(userAuthenticationStarted());
+    }
+  };
+};
+export default withWidth()(
+  connect(
+    mapStatetoProps,
+    mapDispatchToProps
+  )(withStyles(useStyles)(App))
+);
