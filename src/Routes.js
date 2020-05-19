@@ -7,11 +7,11 @@ class Routes extends Component {
   render() {
     return (
       <Switch>
-        <Route path="/" exact render={routeProps => <Home {...routeProps} />} />
+        <Route path="/" exact component={Home} />
         <Route
-          path="/dashboard/:userId"
+          path="/dashboard"
           exact
-          render={routeProps => <Dashboard {...routeProps} />}
+          render={(routeProps) => <Dashboard {...routeProps} />}
         />
       </Switch>
     );

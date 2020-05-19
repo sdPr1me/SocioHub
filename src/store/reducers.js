@@ -1,22 +1,23 @@
 const initialAppState = {
   isAuthenticated: false,
-  isLoading: true
+  isLoading: true,
 };
 const intitalUserState = {
   userId: "",
   dob: null,
   gender: null,
   emailId: "",
-  password: "",
-  name: ""
+  name: "",
 };
 
 export const appStateReducer = (state = initialAppState, action) => {
   let newState = { ...state };
   if (action.type === "USER_AUTHENTICATION_SUCCESS") {
+    console.log("success");
     newState.isLoading = false;
     newState.isAuthenticated = action.payload.isAuthenticated;
   } else if (action.type === "USER_AUTHENTICATION_FAILED") {
+    console.log("Failed");
     newState.isLoading = true;
     newState.isAuthenticated = false;
   }

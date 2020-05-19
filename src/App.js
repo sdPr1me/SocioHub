@@ -9,10 +9,11 @@ import { connect } from "react-redux";
 import store from "./store/store";
 import { userAuthenticationStarted } from "./actions/authenticationActions";
 import { Redirect } from "react-router-dom";
-const useStyles = theme => ({
+import Routes from "./Routes";
+const useStyles = (theme) => ({
   svg: {
-    color: "#ffffff"
-  }
+    color: "#ffffff",
+  },
 });
 class App extends Component {
   componentDidMount() {
@@ -27,13 +28,13 @@ class App extends Component {
             <CircularProgress classes={{ svg: classes.svg }} size={100} />
           </div>
         ) : (
-          ""
+          <Routes></Routes>
         )}
         {this.props.isLoading === false ? (
           this.props.isAuthenticated === false ? (
             <Redirect to="/" />
           ) : (
-            <Redirect to="/dashboard/1" />
+            <Redirect to="/dashboard" />
           )
         ) : (
           ""
@@ -43,23 +44,20 @@ class App extends Component {
   }
 }
 
-const mapStatetoProps = state => {
+const mapStatetoProps = (state) => {
   return {
     isAuthenticated: state.appState.isAuthenticated,
-    isLoading: state.appState.isLoading
+    isLoading: state.appState.isLoading,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getAuthentication: () => {
       console.log("Dispatching");
       dispatch(userAuthenticationStarted());
-    }
+    },
   };
 };
 export default withWidth()(
-  connect(
-    mapStatetoProps,
-    mapDispatchToProps
-  )(withStyles(useStyles)(App))
+  connect(mapStatetoProps, mapDispatchToProps)(withStyles(useStyles)(App))
 );

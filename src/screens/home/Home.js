@@ -20,10 +20,11 @@ import dateFormat from "dateformat";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { connect } from "react-redux";
-const useStyles = theme => ({
+import { signUpStarted } from "../../actions/signUpActions";
+const useStyles = (theme) => ({
   radioRoot: {
     "&:hover": {
-      backgroundColor: fade("#76229E", 0.08)
+      backgroundColor: fade("#76229E", 0.08),
     },
     "&$checked": {
       color: "#501285",
@@ -31,12 +32,12 @@ const useStyles = theme => ({
         backgroundColor: fade("#501285", 0.08),
         // Reset on touch devices, it doesn't add specificity
         "@media (hover: none)": {
-          backgroundColor: "transparent"
-        }
-      }
-    }
+          backgroundColor: "transparent",
+        },
+      },
+    },
   },
-  checked: {}
+  checked: {},
 });
 class Home extends Component {
   state = {
@@ -45,7 +46,7 @@ class Home extends Component {
     selectedGender: null,
     emailId: "",
     password: "",
-    name: ""
+    name: "",
   };
   toggleSignUp = () => {
     if (this.state.isSignUp === false) {
@@ -56,6 +57,16 @@ class Home extends Component {
   };
   handleSignIn = () => {
     console.log(this.state.emailId + "  " + this.state.password);
+  };
+  handleSignUp = () => {
+    const signUpData = {
+      name: this.state.name,
+      emailId: this.state.emailId,
+      password: this.state.password,
+      gender: this.state.selectedGender,
+      dob: this.state.selectedDOB,
+    };
+    this.props.startSignUp(signUpData);
   };
   render() {
     const { classes } = this.props;
@@ -95,7 +106,7 @@ class Home extends Component {
                         margin="normal"
                         variant="outlined"
                         className="form-text-fields"
-                        onChange={e => {
+                        onChange={(e) => {
                           this.setState({ emailId: e.target.value });
                         }}
                       />
@@ -109,7 +120,7 @@ class Home extends Component {
                         autoComplete="current-password"
                         margin="normal"
                         variant="outlined"
-                        onChange={e => {
+                        onChange={(e) => {
                           this.setState({ password: e.target.value });
                         }}
                       />
@@ -150,7 +161,7 @@ class Home extends Component {
                         margin="normal"
                         variant="outlined"
                         className="form-text-fields"
-                        onChange={e => {
+                        onChange={(e) => {
                           this.setState({ name: e.target.value });
                         }}
                       />
@@ -165,7 +176,7 @@ class Home extends Component {
                         margin="normal"
                         variant="outlined"
                         className="form-text-fields"
-                        onChange={e => {
+                        onChange={(e) => {
                           this.setState({ emailId: e.target.value });
                         }}
                       />
@@ -180,7 +191,7 @@ class Home extends Component {
                         name="password"
                         margin="normal"
                         variant="outlined"
-                        onChange={e => {
+                        onChange={(e) => {
                           this.setState({ password: e.target.value });
                         }}
                       />
@@ -193,19 +204,19 @@ class Home extends Component {
                         format="dd/MM/yyyy"
                         value={this.state.selectedDOB}
                         InputAdornmentProps={{ position: "end" }}
-                        onChange={selDate => {
+                        onChange={(selDate) => {
                           let d = dateFormat(selDate, "dd-mmm-yyyy");
                           this.setState({ selectedDOB: d });
                         }}
                         style={{
-                          marginTop: "15px"
+                          marginTop: "15px",
                         }}
                         className="form-text-fields"
                       />
                       <FormControl
                         style={{
                           textAlign: "left",
-                          marginTop: "15px"
+                          marginTop: "15px",
                         }}
                         className="form-text-fields"
                         required
@@ -214,7 +225,7 @@ class Home extends Component {
                         <RadioGroup
                           aria-label="position"
                           name="gender"
-                          onChange={e => {
+                          onChange={(e) => {
                             this.setState({ selectedGender: e.target.value });
                           }}
                           row
@@ -225,7 +236,7 @@ class Home extends Component {
                                 value="Male"
                                 classes={{
                                   root: classes.radioRoot,
-                                  checked: classes.checked
+                                  checked: classes.checked,
                                 }}
                               />
                             }
@@ -238,7 +249,7 @@ class Home extends Component {
                                 value="Female"
                                 classes={{
                                   root: classes.radioRoot,
-                                  checked: classes.checked
+                                  checked: classes.checked,
                                 }}
                               />
                             }
@@ -251,7 +262,7 @@ class Home extends Component {
                                 value="Other"
                                 classes={{
                                   root: classes.radioRoot,
-                                  checked: classes.checked
+                                  checked: classes.checked,
                                 }}
                               />
                             }
@@ -263,11 +274,7 @@ class Home extends Component {
                       <SimpleButton
                         title="Sign Up for Sociohub"
                         size="large"
-                        onClick={() => {
-                          console.log("signup");
-                          console.log(this.props.handleSignUp);
-                          this.props.handleSignUp();
-                        }}
+                        onClick={this.handleSignUp}
                       ></SimpleButton>
                     </CardContent>
                   </Card>
@@ -295,13 +302,10 @@ class Home extends Component {
     );
   }
 }
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   console.log(dispatch);
   return {
-    handleSignUp: () => dispatch({ type: "SIGN_UP" })
+    startSignUp: (data) => dispatch(signUpStarted(data)),
   };
 };
-export default connect(
-  null,
-  mapDispatchToProps
-)(withStyles(useStyles)(Home));
+export default connect(null, mapDispatchToProps)(withStyles(useStyles)(Home));
